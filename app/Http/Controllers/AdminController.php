@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Device;
 use Illuminate\Http\Request;
 use App\Constants\Roles;
+use Inertia\Inertia;
 
 class AdminController extends Controller
 {
@@ -15,6 +16,6 @@ class AdminController extends Controller
         }
 
         $devices = Device::all();
-        return view('admin.dashboard', compact('devices'));
+        return Inertia::render('Admin/Dashboard', ['devices' => $devices]);
     }
 }
