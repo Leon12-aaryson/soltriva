@@ -9,7 +9,7 @@ class Device extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'status', 'user_id', 'is_on', 'voltage', 'max_voltage', 'min_voltage', 'error_code'];
+    protected $fillable = ['name', 'status', 'serial_number', 'user_id', 'is_on', 'voltage', 'max_voltage', 'min_voltage', 'error_code'];
 
     public function user()
     {

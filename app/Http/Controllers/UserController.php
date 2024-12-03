@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Device;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class UserController extends Controller
 {
@@ -20,7 +21,7 @@ class UserController extends Controller
             }
         }
 
-        return view('user.dashboard', compact('devices', 'alerts'));
+        return Inertia::render('User/Dashboard', compact('devices', 'alerts'));
     }
 
     public function registerDevice(Request $request)
@@ -37,6 +38,6 @@ class UserController extends Controller
             // Set default values for other fields
         ]);
 
-        return redirect()->route('user.dashboard')->with('status', 'Device registered successfully.');
+        return Inertia::render('User/Dashboard', ['status' => 'Device registered successfully.']);
     }
 }
