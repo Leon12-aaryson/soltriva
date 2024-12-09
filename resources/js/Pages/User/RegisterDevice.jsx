@@ -15,6 +15,7 @@ export default function RegisterDevice() {
     return (
         <AuthenticatedLayout>
             <Head title="Register Device" />
+            <meta name="csrf-token" content="{{ csrf_token() }}" />
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <h2 className="text-xl font-semibold">Register Device</h2>
