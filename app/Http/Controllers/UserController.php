@@ -11,17 +11,7 @@ class UserController extends Controller
     public function index()
     {
         $devices = Device::where('user_id', auth()->id())->get();
-        $alerts = [];
-
-        foreach ($devices as $device) {
-            if ($device->voltage > $device->max_voltage) {
-                $alerts[] = "Overvoltage detected on device {$device->name}.";
-            } elseif ($device->voltage < $device->min_voltage) {
-                $alerts[] = "Undervoltage detected on device {$device->name}.";
-            }
-        }
-
-        return Inertia::render('User/Dashboard', compact('devices', 'alerts'));
+        return Inertia::render('User/Dashboard', ['devices' => $devices]);
     }
 
     public function registerDevice(Request $request)
@@ -35,9 +25,34 @@ class UserController extends Controller
             'serial_number' => $request->serial_number,
             'name' => $request->name,
             'user_id' => auth()->id(),
-            // Set default values for other fields
         ]);
 
-        return Inertia::render('User/Dashboard', ['status' => 'Device registered successfully.']);
+        return redirect()->route('user.dashboard')->with('success', 'Device registered successfully.');
+    }
+
+    public function getMetrics()
+    {
+        // Fetch and return metrics and historical data
+        $metrics = [
+            'rpm' => 1200, // Example data
+            'voltageImbalance' => 5,
+            'powerInput' => 1500,
+            'powerOutput' => 1400,
+            'temperature' => 75,
+            'current' => 10,
+        ];
+
+        $historicalData = [
+            'voltageImbalance' => [1, 2, 3, 4, 5], // Example historical data
+            'current' => [8, 9, 10, 11, 12],
+        ];
+
+        return response()->json(['metrics' => $metrics, 'historicalData' => $historicalData]);
+    }
+
+    public function togglePump()
+    {
+        // Logic to toggle the pump
+        // Example: Update the pump status in the database
     }
 }

@@ -32,13 +32,16 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('/admin/devices', [AdminController::class, 'devices'])->name('admin.devices');
     Route::resource('devices', DeviceController::class)->only(['index', 'store', 'destroy']);
+    Route::post('/admin/devices/{id}/toggle', [AdminController::class, 'toggleDeviceStatus'])->name('devices.toggle');
+    Route::get('/admin/dashboard/statistics', [AdminController::class, 'getStatistics'])->name('dashboard.statistics');
 });
 
 Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
     Route::get('/user/dashboard', [UserController::class, 'index'])->name('user.dashboard');
-    Route::get('/user/register-device', [UserController::class, 'showRegisterDeviceForm'])->name('user.devices.register');
-    Route::post('/user/devices/register', [UserController::class, 'registerDevice'])->name('user.devices.register');
+    Route::get('/user/metrics', [UserController::class, 'getMetrics'])->name('user.metrics');
+    Route::post('/user/pump/toggle', [UserController::class, 'togglePump'])->name('user.pump.toggle');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
