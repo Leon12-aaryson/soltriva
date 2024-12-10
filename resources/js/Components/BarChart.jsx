@@ -16,15 +16,15 @@ const BarChart = ({ data }) => {
             {
                 label: 'Ambient Temperature',
                 data: data.ambient_temp,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: '#4E79A7', // Blue for ambient temperature
+                borderColor: '#4E79A7',
                 borderWidth: 1,
             },
             {
                 label: 'MOSFET Temperature',
                 data: data.mosfet_temp,
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: '#F28E2B', // Changed to a more distinct orange shade
+                borderColor: '#F28E2B',
                 borderWidth: 1,
             },
         ],

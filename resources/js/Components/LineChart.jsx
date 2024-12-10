@@ -12,31 +12,38 @@ const LineChart = ({ voltage }) => {
             {
                 label: 'L1 Voltage',
                 data: voltage.L1,
-                borderColor: 'rgba(75, 192, 192, 1)',
-                fill: false,
+                borderColor: '#4E79A7', // Blue
+                backgroundColor: 'rgba(78, 121, 167, 0.2)', // Light blue fill for better readability
+                fill: true,
             },
             {
                 label: 'L2 Voltage',
                 data: voltage.L2,
-                borderColor: 'rgba(153, 102, 255, 1)',
-                fill: false,
+                borderColor: '#9966FF', // Purple
+                backgroundColor: 'rgba(153, 102, 255, 0.2)', // Light purple fill
+                fill: true,
             },
             {
                 label: 'L3 Voltage',
                 data: voltage.L3,
-                borderColor: 'rgba(255, 99, 132, 1)',
-                fill: false,
+                borderColor: '#F28E2B', // Changed to a more distinct orange
+                backgroundColor: 'rgba(242, 142, 43, 0.2)', // Light orange fill
+                fill: true,
             },
             {
                 label: 'Voltage Imbalance',
                 data: voltage.voltage_imbalance,
-                borderColor: 'rgba(255, 206, 86, 1)',
-                fill: false,
+                borderColor: '#D62728', // Bright red for emphasis on imbalance
+                backgroundColor: 'rgba(214, 39, 40, 0.2)', // Light red fill
+                fill: true,
             },
         ],
     };
 
-    return <Line data={data} />;
+    return (
+        // Your chart component here, using the 'data' object
+        <Line data={data} />
+    );
 };
 
 export default LineChart;
