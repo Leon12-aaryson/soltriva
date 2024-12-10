@@ -1,66 +1,89 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
-import Gauge from '@/Components/Gauge';
-import LineChart from '@/Components/LineChart';
+import BarChart from '@/Components/BarChart';
+import DataTable from '@/Components/DataTable';
+import SummaryCard from '@/Components/SummaryCard';
+import StatusIndicator from '@/Components/StatusIndicator';
 
-export default function UserDashboard({ devices }) {
-    const [metrics, setMetrics] = useState({
-        rpm: 0,
-        voltageImbalance: 0,
-        powerInput: 0,
-        powerOutput: 0,
-        temperature: 0,
-        current: 0,
-    });
-
-    const [historicalData, setHistoricalData] = useState({
-        voltageImbalance: [],
-        current: [],
+const UserDashboard = ({ devices }) => {
+    const [dashboardData, setDashboardData] = useState({
+        voltage: {
+            L1: [],
+            L2: [],
+            L3: [],
+            voltage_imbalance: [],
+        },
+        bar_chart: {
+            ambient_temp: [],
+            mosfet_temp: [],
+        },
+        status: {
+            undervoltage: false,
+            overvoltage: false,
+        },
+        logs: [],
+        summary: {
+            input_power: 0,
+            output_power: 0,
+            efficiency: 0,
+        },
     });
 
     useEffect(() => {
-        const fetchMetrics = async () => {
-            const response = await fetch(route('user.metrics'));
-            const data = await response.json();
-            setMetrics(data.metrics);
-            setHistoricalData(data.historicalData);
-        };
+        const sampleData = [
+            { timestamp: '1/1/2023 0:00', L1: 55.7784395, L2: 54.77000068, L3: 55.27422009, voltage_imbalance: 0.912214422, panel_current: 9.608815105, panel_voltage: 320.8705398, input_power: 3.08318569, current_out: 11.58702101, output_power: 0.640463549, undervoltage: 1, overvoltage: 1, RPM: 77.56862988, ambient_temp: 32.66014707, mosfet_temp: 48.10950842, efficiency: 94.92386674, pump_status: 1 },
+            // Add more data points here...
+        ];
 
-        fetchMetrics();
-        const interval = setInterval(fetchMetrics, 5000);
+        // Process the sample data
+        const processedData = sampleData.map(entry => ({
+            timestamp: entry.timestamp,
+            data: {
+                L1: entry.L1,
+                L2: entry.L2,
+                L3: entry.L3,
+                voltage_imbalance: entry.voltage_imbalance,
+                input_power: entry.input_power,
+                output_power: entry.output_power,
+                ambient_temp: entry.ambient_temp,
+                mosfet_temp: entry.mosfet_temp,
+            },
+        }));
 
-        return () => clearInterval(interval);
+        // Update the dashboard data
+        setDashboardData(prevData => ({
+            ...prevData,
+            logs: processedData,
+            bar_chart: {
+                ambient_temp: sampleData.map(entry => entry.ambient_temp),
+                mosfet_temp: sampleData.map(entry => entry.mosfet_temp),
+            },
+            summary: {
+                input_power: sampleData.reduce((acc, entry) => acc + entry.input_power, 0),
+                output_power: sampleData.reduce((acc, entry) => acc + entry.output_power, 0),
+                efficiency: (sampleData.reduce((acc, entry) => acc + entry.efficiency, 0) / sampleData.length) || 0,
+            },
+        }));
     }, []);
-
-    const togglePump = async () => {
-        await fetch(route('user.pump.toggle'), { method: 'POST' });
-    };
 
     return (
         <AuthenticatedLayout>
             <Head title="User Dashboard" />
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <h2 className="text-xl font-semibold">Pump Monitoring</h2>
-                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-4">
-                        <Gauge label="RPM" value={metrics.rpm} />
-                        <Gauge label="Voltage Imbalance (%)" value={metrics.voltageImbalance} />
-                        <Gauge label="Power Input (W)" value={metrics.powerInput} />
-                        <Gauge label="Power Output (W)" value={metrics.powerOutput} />
-                        <Gauge label="Temperature (°C)" value={metrics.temperature} />
-                        <Gauge label="Current (A)" value={metrics.current} />
+                    <h2 className="text-xl font-semibold">User Dashboard</h2>
+                    <div className="flex space-x-4">
+                        <StatusIndicator label="Undervoltage" status={dashboardData.status.undervoltage} />
+                        <StatusIndicator label="Overvoltage" status={dashboardData.status.overvoltage} />
                     </div>
-                    <div className="mt-8">
-                        <h3 className="text-lg font-semibold">Historical Data</h3>
-                        <LineChart data={historicalData.voltageImbalance} title="Voltage Imbalance Over Time" />
-                        <LineChart data={historicalData.current} title="Current Over Time" />
-                    </div>
-                    <button onClick={togglePump} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
-                        Toggle Pump
-                    </button>
+                    <BarChart data={dashboardData.bar_chart} />
+                    <DataTable logs={dashboardData.logs} />
+                    <SummaryCard summary={dashboardData.summary} />
                 </div>
             </div>
         </AuthenticatedLayout>
     );
-}
+};
+
+export default UserDashboard;
