@@ -31,24 +31,6 @@ class AdminController extends Controller
         ]);
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'serial_number' => 'required|string|unique:devices,serial_number',
-            'name' => 'required|string|max:255',
-        ]);
-
-        Device::create($request->all());
-        return Inertia::location(route('admin.devices'));
-    }
-
-    public function destroy($id)
-    {
-        Device::findOrFail($id)->delete();
-
-        return Inertia::location(route('admin.devices'));
-    }
-
     public function toggleDeviceStatus($id)
     {
         $device = Device::findOrFail($id);

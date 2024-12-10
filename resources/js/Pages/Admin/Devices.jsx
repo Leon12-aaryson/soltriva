@@ -1,6 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { useState } from 'react';
+import swal from 'sweetalert';
 
 export default function Devices({ devices: initialDevices }) {
     const [devices, setDevices] = useState(initialDevices);
@@ -14,9 +15,11 @@ export default function Devices({ devices: initialDevices }) {
         e.preventDefault();
         post(route('devices.store'), {
             onSuccess: (response) => {
-                // Add the new device to the existing devices state
                 setDevices([...devices, response]);
                 reset(); // Reset the form fields
+                swal("Success", "Device added successfully", "success").then(() => {
+                    window.location.reload(); // Reload the page after the alert is acknowledged
+                });
             },
         });
     };
@@ -32,6 +35,31 @@ export default function Devices({ devices: initialDevices }) {
             }
         });
     };
+
+    const deleteDevice = (id) => {
+        if (confirm("Are you sure you want to delete this device?")) {
+            const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
+            const csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute('content') : '';
+
+            fetch(route('devices.destroy', id), {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken // Safely use CSRF token
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    setDevices(devices.filter(device => device.id !== id)); // Remove the deleted device from the state
+                    swal("Deleted", "Device deleted successfully", "success");
+                })
+                .catch(error => {
+                    swal("Error", "Failed to delete the device", "error");
+                });
+        }
+    };
+
+
 
     return (
         <AuthenticatedLayout>
@@ -105,7 +133,7 @@ export default function Devices({ devices: initialDevices }) {
                                             >
                                                 <i className={`bx ${device.is_on ? 'bxs-toggle-right' : 'bx-toggle-left'}`}></i>
                                             </button>
-                                            <button className="text-red-500">
+                                            <button className="text-red-500" onClick={() => deleteDevice(device.id)}>
                                                 <i className="bx bx-trash"></i>
                                             </button>
                                         </div>

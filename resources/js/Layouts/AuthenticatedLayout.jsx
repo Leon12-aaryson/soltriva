@@ -13,7 +13,7 @@ export default function AuthenticatedLayout({ header, children }) {
         useState(false);
 
     return (
-        <div className="flex min-h-screen bg-gray-100">
+        <div className="min-h-screen bg-gray-100 w-full">
             <Sidebar />
             <div className="flex-1 ml-64">
                 <nav className="border-b border-gray-100 bg-white">

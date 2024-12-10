@@ -11,7 +11,7 @@ class DeviceController extends Controller
     public function index()
     {
         $devices = Device::all();
-        return Inertia::render('Admin/Dashboard', ['devices' => $devices]);
+        return Inertia::render('Admin/Devices', ['devices' => $devices]);
     }
 
     public function store(Request $request)
@@ -27,6 +27,19 @@ class DeviceController extends Controller
             'user_id' => auth()->id(),
         ]);
 
-        return redirect()->route('admin.dashboard')->with('success', 'Device added successfully.');
+        return redirect()->route('admin.devices')->with('success', 'Device added successfully.');
+    }
+
+    public function destroy($id)
+    {
+        Device::findOrFail($id)->delete();
+        return redirect()->route('admin.devices')->with('success', 'Device deleted successfully.');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $device = Device::findOrFail($id);
+        $device->update($request->all());
+        return redirect()->route('admin.devices')->with('success', 'Device updated successfully.');
     }
 }
