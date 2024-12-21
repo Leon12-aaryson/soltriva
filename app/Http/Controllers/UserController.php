@@ -50,9 +50,13 @@ class UserController extends Controller
         return response()->json(['metrics' => $metrics, 'historicalData' => $historicalData]);
     }
 
-    public function togglePump()
+
+    public function devices()
     {
-        // Logic to toggle the pump
-        // Example: Update the pump status in the database
+        // Fetch devices allocated to the authenticated user
+        $devices = Device::where('user_id', auth()->id())->get();
+
+        // Return the devices to the User/Devices page
+        return Inertia::render('User/Devices', ['devices' => $devices]);
     }
 }

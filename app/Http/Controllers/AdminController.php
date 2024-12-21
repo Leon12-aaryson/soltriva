@@ -12,7 +12,14 @@ class AdminController extends Controller
     public function index()
     {
         $devices = Device::all();
-        return Inertia::render('Admin/Dashboard', ['devices' => $devices]);
+        $users = User::all();
+        return Inertia::render('Admin/Dashboard', ['devices' => $devices, 'users' => $users]);
+    }
+
+    public function users()
+    {
+        $users = User::all();
+        return Inertia::render('Admin/Users', ['users' => $users]);
     }
 
     public function getStatistics()
@@ -31,19 +38,19 @@ class AdminController extends Controller
         ]);
     }
 
-    public function toggleDeviceStatus($id)
-    {
-        $device = Device::findOrFail($id);
-        $device->is_on = !$device->is_on; // Toggle the status
-        $device->save();
+    // public function toggleDeviceStatus($id)
+    // {
+    //     $device = Device::findOrFail($id);
+    //     $device->is_on = !$device->is_on;
+    //     $device->save();
 
-        // Return a redirect to the dashboard
-        return Inertia::location(route('admin.devices'));
-    }
+    //     return Inertia::location(route('admin.devices'));
+    // }
 
     public function devices()
     {
         $devices = Device::all();
-        return Inertia::render('Admin/Devices', ['devices' => $devices]);
+        $users = User::all();
+        return Inertia::render('Admin/Devices', ['devices' => $devices, 'users' => $users]);
     }
 }

@@ -3,11 +3,13 @@ import { Head, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 import swal from 'sweetalert';
 
-export default function Devices({ devices: initialDevices }) {
+export default function Devices({ devices: initialDevices, users = [] }) {
+    console.log(users); // Check if users are being passed correctly
     const [devices, setDevices] = useState(initialDevices);
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         serial_number: '',
+        user_id: '',
     });
 
     // Function to handle adding a new device
@@ -59,8 +61,6 @@ export default function Devices({ devices: initialDevices }) {
         }
     };
 
-
-
     return (
         <AuthenticatedLayout>
             <Head title="Devices Management" />
@@ -97,6 +97,24 @@ export default function Devices({ devices: initialDevices }) {
                             {errors.serial_number && <p className="mt-2 text-sm text-red-600">{errors.serial_number}</p>}
                         </div>
                         <div>
+                            <label htmlFor="user_id" className="block text-sm font-medium text-gray-700">
+                                Assign User
+                            </label>
+                            <select
+                                id="user_id"
+                                value={data.user_id}
+                                onChange={(e) => setData('user_id', e.target.value)}
+                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                required
+                            >
+                                <option value="">Select a user</option>
+                                {users.map(user => (
+                                    <option key={user.id} value={user.id}>{user.name}</option>
+                                ))}
+                            </select>
+                            {errors.user_id && <p className="mt-2 text-sm text-red-600">{errors.user_id}</p>}
+                        </div>
+                        <div>
                             <button
                                 type="submit"
                                 className="bg-blue-500 text-white px-4 py-2 rounded"
@@ -112,6 +130,7 @@ export default function Devices({ devices: initialDevices }) {
                                 <th className="px-4 py-2">Device ID</th>
                                 <th className="px-4 py-2">Device Name</th>
                                 <th className="px-4 py-2">Serial Number</th>
+                                <th className="px-4 py-2">Assigned User</th>
                                 <th className="px-4 py-2">Status</th>
                                 <th className="px-4 py-2">Actions</th>
                             </tr>
@@ -122,9 +141,8 @@ export default function Devices({ devices: initialDevices }) {
                                     <td className="border px-4 py-2">{device.id}</td>
                                     <td className="border px-4 py-2">{device.name}</td>
                                     <td className="border px-4 py-2">{device.serial_number}</td>
-                                    <td className="border px-4 py-2">
-                                        {device.is_on ? 'On' : 'Off'}
-                                    </td>
+                                    <td className="border px-4 py-2">{device.user_id ? users.find(user => user.id === device.user_id)?.name : 'Unassigned'}</td>
+                                    <td className="border px-4 py-2">{device.is_on ? 'On' : 'Off'}</td>
                                     <td className="border px-2 py-2">
                                         <div className="flex items-center justify-center space-x-4">
                                             <button
@@ -142,6 +160,29 @@ export default function Devices({ devices: initialDevices }) {
                             ))}
                         </tbody>
                     </table>
+                    <h2 className="text-xl font-semibold mt-6">User List</h2>
+                    <div className="overflow-x-auto mt-4">
+                        <table className="min-w-full bg-white border border-gray-300">
+                            <thead>
+                                <tr>
+                                    <th className="py-2 px-4 border-b">ID</th>
+                                    <th className="py-2 px-4 border-b">Name</th>
+                                    <th className="py-2 px-4 border-b">Email</th>
+                                    <th className="py-2 px-4 border-b">Role</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {users.map(user => (
+                                    <tr key={user.id}>
+                                        <td className="py-2 px-4 border-b">{user.id}</td>
+                                        <td className="py-2 px-4 border-b">{user.name}</td>
+                                        <td className="py-2 px-4 border-b">{user.email}</td>
+                                        <td className="py-2 px-4 border-b">{user.role}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </AuthenticatedLayout>

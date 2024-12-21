@@ -23,6 +23,20 @@ export default function Sidebar() {
                                     <i className='bx bx-devices'></i> Devices
                                 </Link>
                             </li>
+                            <li>
+                                <Link href={route('admin.users')} className="block p-4 hover:bg-gray-700 hover:text-white">
+                                    <i className='bx bx-user'></i> Users
+                                </Link>
+                            </li>
+                        </>
+                    )}
+                    {user.role === 'user' && (
+                        <>
+                            <li>
+                                <Link href={route('user.devices')} className="block p-4 hover:bg-gray-700 hover:text-white">
+                                    <i className='bx bx-devices'></i> Devices
+                                </Link>
+                            </li>
                         </>
                     )}
                     <li>

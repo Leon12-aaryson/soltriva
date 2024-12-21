@@ -35,14 +35,22 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('/admin/devices', [AdminController::class, 'devices'])->name('admin.devices');
     Route::resource('devices', DeviceController::class)->only(['index', 'store', 'update']);
     Route::delete('admin/devices/{id}', [DeviceController::class, 'destroy'])->name('devices.destroy');
-    Route::post('/admin/devices/{id}/toggle', [AdminController::class, 'toggleDeviceStatus'])->name('devices.toggle');
+    // Route::post('/admin/devices/{id}/toggle', [AdminController::class, 'toggleDeviceStatus'])->name('devices.toggle');
     Route::get('/admin/dashboard/statistics', [AdminController::class, 'getStatistics'])->name('dashboard.statistics');
+    Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
 });
 
 Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
     Route::get('/user/dashboard', [UserController::class, 'index'])->name('user.dashboard');
     Route::get('/user/metrics', [UserController::class, 'getMetrics'])->name('user.metrics');
     Route::post('/user/pump/toggle', [UserController::class, 'togglePump'])->name('user.pump.toggle');
+    Route::get('/user/devices', [UserController::class, 'devices'])->name('user.devices');
+    Route::get('/device/{id}/analytics', [DeviceController::class, 'analytics'])->name('device.analytics');
+});
+
+// Route to toggle device status for both admin and user
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::post('/user/devices/{id}/toggle', [DeviceController::class, 'toggleDeviceStatus'])->name('devices.toggle');
 });
 
 require __DIR__ . '/auth.php';
