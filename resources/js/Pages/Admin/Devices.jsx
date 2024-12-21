@@ -64,7 +64,7 @@ export default function Devices({ devices: initialDevices, users = [] }) {
     return (
         <AuthenticatedLayout>
             <Head title="Devices Management" />
-            <div className="py-12">
+            <div className="py-5">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <h2 className="text-xl font-semibold">Device Management</h2>
                     <form onSubmit={submit} className="mt-6 space-y-6">

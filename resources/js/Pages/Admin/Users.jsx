@@ -2,24 +2,13 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
-const Users = () => {
-    const [users, setUsers] = useState([]);
-
-    useEffect(() => {
-        // Fetch users from the backend
-        const fetchUsers = async () => {
-            const response = await fetch(route('admin.users'));
-            const data = await response.json();
-            setUsers(data);
-        };
-
-        fetchUsers();
-    }, []);
+const Users = ({ users: initialUsers }) => {
+    const [users, setUsers] = useState(initialUsers);
 
     return (
         <AuthenticatedLayout>
             <Head title="Users Management" />
-            <div className="py-12">
+            <div className="py-5">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <h2 className="text-xl font-semibold">Users Management</h2>
                     <table className="min-w-full border-collapse border border-gray-200">

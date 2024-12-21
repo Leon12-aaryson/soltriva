@@ -38,15 +38,6 @@ class AdminController extends Controller
         ]);
     }
 
-    // public function toggleDeviceStatus($id)
-    // {
-    //     $device = Device::findOrFail($id);
-    //     $device->is_on = !$device->is_on;
-    //     $device->save();
-
-    //     return Inertia::location(route('admin.devices'));
-    // }
-
     public function devices()
     {
         $devices = Device::all();

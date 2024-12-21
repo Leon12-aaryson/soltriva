@@ -80,7 +80,7 @@ class DeviceController extends Controller
     public function analytics($id) {
         $device = Device::findOrFail($id);
 
-        return Inertia::render('DeviceAnalytics', [
+        return Inertia::render('User/DeviceAnalytics', [
             'device' => $device,
         ]);
     }

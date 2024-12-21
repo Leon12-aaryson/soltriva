@@ -35,7 +35,6 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('/admin/devices', [AdminController::class, 'devices'])->name('admin.devices');
     Route::resource('devices', DeviceController::class)->only(['index', 'store', 'update']);
     Route::delete('admin/devices/{id}', [DeviceController::class, 'destroy'])->name('devices.destroy');
-    // Route::post('/admin/devices/{id}/toggle', [AdminController::class, 'toggleDeviceStatus'])->name('devices.toggle');
     Route::get('/admin/dashboard/statistics', [AdminController::class, 'getStatistics'])->name('dashboard.statistics');
     Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
 });

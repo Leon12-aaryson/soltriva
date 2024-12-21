@@ -24,7 +24,7 @@ export default function Devices({ devices: initialDevices }) {
     return (
         <AuthenticatedLayout>
             <Head title="My Devices" />
-            <div className="py-12">
+            <div className="py-5">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <h2 className="text-xl font-semibold">My Devices</h2>
                     <div className="overflow-x-auto mt-4">
