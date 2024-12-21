@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import swal from 'sweetalert';
 
 export default function Devices({ devices: initialDevices, users = [] }) {
@@ -11,6 +11,26 @@ export default function Devices({ devices: initialDevices, users = [] }) {
         serial_number: '',
         user_id: '',
     });
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
+    const filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
 
     // Function to handle adding a new device
     const submit = (e) => {
@@ -100,18 +120,46 @@ export default function Devices({ devices: initialDevices, users = [] }) {
                             <label htmlFor="user_id" className="block text-sm font-medium text-gray-700">
                                 Assign User
                             </label>
-                            <select
+                            <div className="relative" ref={dropdownRef}>
+                                <input
+                                    type="text"
+                                    placeholder="Search users..."
+                                    value={searchTerm}
+                                    onChange={(e) => {
+                                        setSearchTerm(e.target.value);
+                                        setIsDropdownOpen(true); // Open dropdown on typing
+                                    }}
+                                    onFocus={() => setIsDropdownOpen(true)} // Also open on focus
+                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                />
+                                {isDropdownOpen && (
+                                    <div className="absolute w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1 z-10">
+                                        {filteredUsers.length > 0 ? (
+                                            filteredUsers.map(user => (
+                                                <div
+                                                    key={user.id}
+                                                    onClick={() => {
+                                                        setData('user_id', user.id);
+                                                        setSearchTerm(user.name);
+                                                        setIsDropdownOpen(false);
+                                                    }}
+                                                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                                >
+                                                    {user.name}
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className="px-4 py-2 text-gray-500">No users found</div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                            <input
+                                type="hidden"
                                 id="user_id"
+                                name="user_id"
                                 value={data.user_id}
-                                onChange={(e) => setData('user_id', e.target.value)}
-                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                required
-                            >
-                                <option value="">Select a user</option>
-                                {users.map(user => (
-                                    <option key={user.id} value={user.id}>{user.name}</option>
-                                ))}
-                            </select>
+                            />
                             {errors.user_id && <p className="mt-2 text-sm text-red-600">{errors.user_id}</p>}
                         </div>
                         <div>
@@ -160,29 +208,6 @@ export default function Devices({ devices: initialDevices, users = [] }) {
                             ))}
                         </tbody>
                     </table>
-                    <h2 className="text-xl font-semibold mt-6">User List</h2>
-                    <div className="overflow-x-auto mt-4">
-                        <table className="min-w-full bg-white border border-gray-300">
-                            <thead>
-                                <tr>
-                                    <th className="py-2 px-4 border-b">ID</th>
-                                    <th className="py-2 px-4 border-b">Name</th>
-                                    <th className="py-2 px-4 border-b">Email</th>
-                                    <th className="py-2 px-4 border-b">Role</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {users.map(user => (
-                                    <tr key={user.id}>
-                                        <td className="py-2 px-4 border-b">{user.id}</td>
-                                        <td className="py-2 px-4 border-b">{user.name}</td>
-                                        <td className="py-2 px-4 border-b">{user.email}</td>
-                                        <td className="py-2 px-4 border-b">{user.role}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
                 </div>
             </div>
         </AuthenticatedLayout>

@@ -10,7 +10,7 @@ const Users = ({ users: initialUsers }) => {
             <Head title="Users Management" />
             <div className="py-5">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <h2 className="text-xl font-semibold">Users Management</h2>
+                    <h2 className="text-xl font-semibold py-5">Users Management</h2>
                     <table className="min-w-full border-collapse border border-gray-200">
                         <thead>
                             <tr>
