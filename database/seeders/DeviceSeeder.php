@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\User;
 use App\Models\Device;
+use App\Models\User;
 use Faker\Factory as Faker;
 
 class DeviceSeeder extends Seeder
@@ -19,16 +19,23 @@ class DeviceSeeder extends Seeder
         // Fetch all users
         $users = User::all();
 
-        // Create sample devices for each user
         foreach ($users as $user) {
+            // Create at least one device for each user
             Device::create([
-                'name' => 'Device for ' . $user->name,
-                'serial_number' => 'SN-' . uniqid(),
+                'name' => $faker->word,
+                'serial_number' => $faker->unique()->numerify('SN-#####'),
                 'user_id' => $user->id,
                 'is_on' => $faker->boolean,
-                'voltage' => $faker->randomFloat(2, 220, 240),
-                'max_voltage' => 250,
-                'min_voltage' => 200,
+            ]);
+        }
+
+        // Optionally create additional devices
+        for ($i = 0; $i < 50; $i++) {
+            Device::create([
+                'name' => $faker->word,
+                'serial_number' => $faker->unique()->numerify('SN-#####'),
+                'user_id' => $faker->randomElement($users)->id,
+                'is_on' => $faker->boolean,
             ]);
         }
     }

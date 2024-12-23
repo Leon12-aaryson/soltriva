@@ -1,6 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
 import { useState } from 'react';
+import { Link } from '@inertiajs/react';
 
 export default function Devices({ devices: initialDevices }) {
     const [devices, setDevices] = useState(initialDevices);
@@ -60,9 +61,13 @@ export default function Devices({ devices: initialDevices }) {
                                             </div>
                                         </td>
                                         <td className="py-2 px-4 border-b">
-                                            <a href={route('device.analytics', device.id)} className="text-blue-500 hover:underline">
-                                                View Analytics
-                                            </a>
+                                            {device.id ? (
+                                                <a href={route('device.analytics', { id: device.id })} target="" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                                                    View Analytics
+                                                </a>
+                                            ) : (
+                                                <span className="text-gray-500">No Analytics Available</span>
+                                            )}
                                         </td>
                                     </tr>
                                 ))}

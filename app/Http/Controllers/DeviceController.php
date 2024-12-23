@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Device;
+use App\Models\DeviceAnalytics;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Log;
 
 class DeviceController extends Controller
 {
@@ -50,19 +50,6 @@ class DeviceController extends Controller
         return redirect()->route('admin.devices')->with('success', 'Device updated successfully.');
     }
 
-    // public function toggleDeviceStatus($id)
-    // {
-    //     $device = Device::findOrFail($id);
-    //     $device->is_on = !$device->is_on; // Toggle the status
-    //     $device->save();
-
-    //     if (auth()->user()->role === 'admin') {
-    //         return Inertia::render('Admin/Devices', ['devices' => Device::all()]);
-    //     } else {
-    //         return response()->json(['success' => true]);
-    //     }
-    // }
-
     public function toggleDeviceStatus($id)
     {
         $device = Device::findOrFail($id);
@@ -77,11 +64,28 @@ class DeviceController extends Controller
         }
     }
 
-    public function analytics($id) {
+    public function analytics($id)
+    {
         $device = Device::findOrFail($id);
 
-        return Inertia::render('User/DeviceAnalytics', [
+        $deviceData = DeviceAnalytics::where('device_id', $id)->get();
+
+        foreach ($deviceData as $data) {
+            $analytics['voltage'][] = $data->voltage;
+            $analytics['current'][] = $data->current;
+            $analytics['temperature'][] = $data->temperature;
+            $analytics['timestamp'][] = $data->recorded_at;
+            $analytics['solar_power_input'][]=$data->solar_power_input;
+            $analytics['power_output'][]=$data->power_output;
+            $analytics['panel_voltage'][]=$data->panel_voltage;
+            $analytics['rpm'][]=$data->rpm;
+            $analytics['error_code'][]=$data->error_code;
+        };
+
+        
+        return inertia('User/DeviceAnalytics', [
             'device' => $device,
+            'analytics' => $analytics
         ]);
     }
 }

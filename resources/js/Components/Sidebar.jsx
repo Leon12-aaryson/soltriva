@@ -34,7 +34,7 @@ export default function Sidebar() {
                         <>
                             <li>
                                 <Link href={route('user.devices')} className="block p-4 hover:bg-gray-700 hover:text-white">
-                                    <i className='bx bx-devices'></i> Devices
+                                    <i className='bx bx-devices'></i> Device Management
                                 </Link>
                             </li>
                         </>

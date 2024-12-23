@@ -56,4 +56,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Device::class);
     }
+
+    public function analytics()
+    {
+        return $this->hasManyThrough(DeviceAnalytics::class, Device::class);
+    }
 }

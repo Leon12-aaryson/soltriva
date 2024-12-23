@@ -16,6 +16,7 @@ const Users = ({ users: initialUsers }) => {
                             <tr>
                                 <th className="border border-gray-300 px-4 py-2">ID</th>
                                 <th className="border border-gray-300 px-4 py-2">Name</th>
+                                <th className="border border-gray-300 px-4 py-2">User Role</th>
                                 <th className="border border-gray-300 px-4 py-2">Email</th>
                             </tr>
                         </thead>
@@ -24,6 +25,7 @@ const Users = ({ users: initialUsers }) => {
                                 <tr key={user.id}>
                                     <td className="border border-gray-300 px-4 py-2">{user.id}</td>
                                     <td className="border border-gray-300 px-4 py-2">{user.name}</td>
+                                    <td className="border border-gray-300 px-4 py-2">{user.role}</td>
                                     <td className="border border-gray-300 px-4 py-2">{user.email}</td>
                                 </tr>
                             ))}

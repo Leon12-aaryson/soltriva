@@ -10,8 +10,54 @@ class UserController extends Controller
 {
     public function index()
     {
-        $devices = Device::where('user_id', auth()->id())->get();
-        return Inertia::render('User/Dashboard', ['devices' => $devices]);
+        $userId = auth()->id();
+        $devices = Device::where('user_id', $userId)->get();
+
+        // Calculate statistics
+        $stats = [
+            'totalDevices' => $devices->count(),
+            'activeDevices' => $devices->where('is_on', true)->count(),
+            'offlineDevices' => $devices->where('is_on', false)->count(),
+            'maintenanceDue' => $devices->where('maintenance_due', true)->count(),
+        ];
+
+        // Placeholder for recent activities and notifications
+        // Replace these with actual data retrieval logic as needed
+        $recentActivities = [
+            [
+                'id' => 1,
+                'description' => 'Activated device "Thermostat A1"',
+                'timestamp' => now()->subMinutes(10),
+            ],
+            [
+                'id' => 2,
+                'description' => 'Deactivated device "Light Bulb B2"',
+                'timestamp' => now()->subHours(1),
+            ],
+            [
+                'id' => 3,
+                'description' => 'Scheduled maintenance for "HVAC C3"',
+                'timestamp' => now()->subDays(1),
+            ],
+        ];
+        // Sample Notifications
+        $notifications = [
+            [
+                'id' => 1,
+                'message' => 'Device "Thermostat A1" has been activated.',
+            ],
+            [
+                'id' => 2,
+                'message' => 'Maintenance scheduled for device "HVAC C3".',
+            ],
+        ];
+
+        return Inertia::render('User/Dashboard', [
+            'devices' => $devices,
+            'stats' => $stats,
+            'recentActivities' => $recentActivities,
+            'notifications' => $notifications,
+        ]);
     }
 
     public function registerDevice(Request $request)
