@@ -17,10 +17,6 @@ return new class extends Migration
             $table->string('serial_number')->unique();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->boolean('is_on')->default(false);
-            $table->float('voltage')->nullable();
-            $table->float('max_voltage')->nullable();
-            $table->float('min_voltage')->nullable();
-            $table->string('error_code')->nullable();
             $table->timestamps();
         });
     }

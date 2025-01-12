@@ -40,7 +40,7 @@ export default function AdminDashboard() {
     return (
         <AuthenticatedLayout>
             <Head title="Admin Dashboard" />
-            <div className="py-12">
+            <div className="py-5">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <h2 className="text-xl font-semibold">System Statistics</h2>
                     <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">

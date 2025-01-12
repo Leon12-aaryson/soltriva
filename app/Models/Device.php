@@ -9,10 +9,15 @@ class Device extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'status', 'serial_number', 'user_id', 'is_on', 'voltage', 'max_voltage', 'min_voltage', 'error_code'];
+    protected $fillable = ['name', 'serial_number', 'user_id', 'is_on'];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function analytics()
+    {
+        return $this->hasMany(DeviceAnalytics::class);
     }
 }
