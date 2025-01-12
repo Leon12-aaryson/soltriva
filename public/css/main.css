@@ -3,6 +3,20 @@
     font-style: normal;
 }
 
+.sidebar {
+    background-color: #2a425b !important;
+    color: #fff;
+}
+
+.sidebar-link {
+    color: #fff;
+}
+
+.sidebar-link:hover, .sidebar-link.active {
+    background-color: #fff;
+    color: #293037;
+}
+
 .dashbtn {
     background-color: #293037;
     color: white;

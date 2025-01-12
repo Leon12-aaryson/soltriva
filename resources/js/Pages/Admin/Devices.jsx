@@ -109,125 +109,127 @@ export default function Devices({ devices: initialDevices, users = [] }) {
             <div className="py-5">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <h2 className="text-xl font-semibold">Device Management</h2>
-                    <form onSubmit={submit} className="mt-6 space-y-6">
-                        <div>
-                            <label
-                                htmlFor="name"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Device Name
-                            </label>
-                            <input
-                                id="name"
-                                type="text"
-                                value={data.name}
-                                onChange={(e) =>
-                                    setData("name", e.target.value)
-                                }
-                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                required
-                            />
-                            {errors.name && (
-                                <p className="mt-2 text-sm text-red-600">
-                                    {errors.name}
-                                </p>
-                            )}
-                        </div>
-                        <div>
-                            <label
-                                htmlFor="serial_number"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Serial Number
-                            </label>
-                            <input
-                                id="serial_number"
-                                type="text"
-                                value={data.serial_number}
-                                onChange={(e) =>
-                                    setData("serial_number", e.target.value)
-                                }
-                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                required
-                            />
-                            {errors.serial_number && (
-                                <p className="mt-2 text-sm text-red-600">
-                                    {errors.serial_number}
-                                </p>
-                            )}
-                        </div>
-                        <div>
-                            <label
-                                htmlFor="user_id"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Assign User
-                            </label>
-                            <div className="relative" ref={dropdownRef}>
+                    <div className="mt-2 bg-white shadow sm:rounded-lg sm:p-8">
+                        <form onSubmit={submit} className="space-y-6">
+                            <div>
+                                <label
+                                    htmlFor="name"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Device Name
+                                </label>
                                 <input
+                                    id="name"
                                     type="text"
-                                    placeholder="Search users..."
-                                    value={searchTerm}
-                                    onChange={(e) => {
-                                        setSearchTerm(e.target.value);
-                                        setIsDropdownOpen(true);
-                                    }}
-                                    onFocus={() => setIsDropdownOpen(true)}
+                                    value={data.name}
+                                    onChange={(e) =>
+                                        setData("name", e.target.value)
+                                    }
                                     className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                    required
                                 />
-                                {isDropdownOpen && (
-                                    <div className="absolute w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1 z-10">
-                                        {filteredUsers.length > 0 ? (
-                                            filteredUsers.map((user) => (
-                                                <div
-                                                    key={user.id}
-                                                    onClick={() => {
-                                                        setData(
-                                                            "user_id",
-                                                            user.id
-                                                        );
-                                                        setSearchTerm(
-                                                            user.name
-                                                        );
-                                                        setIsDropdownOpen(
-                                                            false
-                                                        );
-                                                    }}
-                                                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                                                >
-                                                    {user.name}
-                                                </div>
-                                            ))
-                                        ) : (
-                                            <div className="px-4 py-2 text-gray-500">
-                                                No users found
-                                            </div>
-                                        )}
-                                    </div>
+                                {errors.name && (
+                                    <p className="mt-2 text-sm text-red-600">
+                                        {errors.name}
+                                    </p>
                                 )}
                             </div>
-                            <input
-                                type="hidden"
-                                id="user_id"
-                                name="user_id"
-                                value={data.user_id}
-                            />
-                            {errors.user_id && (
-                                <p className="mt-2 text-sm text-red-600">
-                                    {errors.user_id}
-                                </p>
-                            )}
-                        </div>
-                        <div>
-                            <button
-                                type="submit"
-                                className="bg-blue-500 text-white px-4 py-2 rounded"
-                                disabled={processing}
-                            >
-                                Add Device
-                            </button>
-                        </div>
-                    </form>
+                            <div>
+                                <label
+                                    htmlFor="serial_number"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Serial Number
+                                </label>
+                                <input
+                                    id="serial_number"
+                                    type="text"
+                                    value={data.serial_number}
+                                    onChange={(e) =>
+                                        setData("serial_number", e.target.value)
+                                    }
+                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                    required
+                                />
+                                {errors.serial_number && (
+                                    <p className="mt-2 text-sm text-red-600">
+                                        {errors.serial_number}
+                                    </p>
+                                )}
+                            </div>
+                            <div>
+                                <label
+                                    htmlFor="user_id"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Assign User
+                                </label>
+                                <div className="relative" ref={dropdownRef}>
+                                    <input
+                                        type="text"
+                                        placeholder="Search users..."
+                                        value={searchTerm}
+                                        onChange={(e) => {
+                                            setSearchTerm(e.target.value);
+                                            setIsDropdownOpen(true);
+                                        }}
+                                        onFocus={() => setIsDropdownOpen(true)}
+                                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                    />
+                                    {isDropdownOpen && (
+                                        <div className="absolute w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1 z-10">
+                                            {filteredUsers.length > 0 ? (
+                                                filteredUsers.map((user) => (
+                                                    <div
+                                                        key={user.id}
+                                                        onClick={() => {
+                                                            setData(
+                                                                "user_id",
+                                                                user.id
+                                                            );
+                                                            setSearchTerm(
+                                                                user.name
+                                                            );
+                                                            setIsDropdownOpen(
+                                                                false
+                                                            );
+                                                        }}
+                                                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                                    >
+                                                        {user.name}
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <div className="px-4 py-2 text-gray-500">
+                                                    No users found
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                                <input
+                                    type="hidden"
+                                    id="user_id"
+                                    name="user_id"
+                                    value={data.user_id}
+                                />
+                                {errors.user_id && (
+                                    <p className="mt-2 text-sm text-red-600">
+                                        {errors.user_id}
+                                    </p>
+                                )}
+                            </div>
+                            <div>
+                                <button
+                                    type="submit"
+                                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                                    disabled={processing}
+                                >
+                                    Add Device
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                     {/* Device Search Form */}
                     <form onSubmit={(e) => { e.preventDefault(); }}>
                         <div className="mt-4">
@@ -272,9 +274,9 @@ export default function Devices({ devices: initialDevices, users = [] }) {
                                     <td className="border px-4 py-2">
                                         {device.user_id
                                             ? users.find(
-                                                  (user) =>
-                                                      user.id === device.user_id
-                                              )?.name
+                                                (user) =>
+                                                    user.id === device.user_id
+                                            )?.name
                                             : "Unassigned"}
                                     </td>
                                     <td className="border px-4 py-2">
@@ -283,21 +285,19 @@ export default function Devices({ devices: initialDevices, users = [] }) {
                                     <td className="border px-2 py-2">
                                         <div className="flex items-center justify-center space-x-4">
                                             <button
-                                                className={`text-3xl mr-2 transition-colors ${
-                                                    device.is_on
-                                                        ? "text-green-500"
-                                                        : "text-gray-500"
-                                                }`}
+                                                className={`text-3xl mr-2 transition-colors ${device.is_on
+                                                    ? "text-green-500"
+                                                    : "text-gray-500"
+                                                    }`}
                                                 onClick={() =>
                                                     toggleStatus(device.id)
                                                 }
                                             >
                                                 <i
-                                                    className={`bx ${
-                                                        device.is_on
-                                                            ? "bxs-toggle-right"
-                                                            : "bx-toggle-left"
-                                                    }`}
+                                                    className={`bx ${device.is_on
+                                                        ? "bxs-toggle-right"
+                                                        : "bx-toggle-left"
+                                                        }`}
                                                 ></i>
                                             </button>
                                             <button
@@ -361,6 +361,6 @@ export default function Devices({ devices: initialDevices, users = [] }) {
                     </div>
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </AuthenticatedLayout >
     );
 }

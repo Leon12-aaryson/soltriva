@@ -44,4 +44,12 @@ class AdminController extends Controller
         $users = User::all();
         return Inertia::render('Admin/Devices', ['devices' => $devices, 'users' => $users]);
     }
+
+    public function destroyUser($id)
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return redirect()->route('admin.users')->with('success', 'User deleted successfully');
+    }
 }
