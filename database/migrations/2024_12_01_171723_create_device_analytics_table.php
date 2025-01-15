@@ -27,6 +27,7 @@ return new class extends Migration
             $table->float('phase_voltage_l3')->nullable();
             $table->float('panel_voltage')->nullable();
             $table->float('solar_power_input')->nullable();
+            $table->float('ambient_temperature')->nullable();
             $table->float('temperature')->nullable();
             $table->string('error_code')->nullable();
 
