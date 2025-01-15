@@ -70,20 +70,31 @@ class DeviceController extends Controller
 
         $deviceData = DeviceAnalytics::where('device_id', $id)->get();
 
+        $analytics = [
+            'voltage' => [],
+            'current' => [],
+            'temperature' => [],
+            'timestamp' => [],
+            'solar_power_input' => [],
+            'power_output' => [],
+            'panel_voltage' => [],
+            'rpm' => [],
+            'error_code' => [],
+        ];
+
         foreach ($deviceData as $data) {
             $analytics['voltage'][] = $data->voltage;
             $analytics['current'][] = $data->current;
             $analytics['temperature'][] = $data->temperature;
             $analytics['timestamp'][] = $data->recorded_at;
-            $analytics['solar_power_input'][]=$data->solar_power_input;
-            $analytics['power_output'][]=$data->power_output;
-            $analytics['panel_voltage'][]=$data->panel_voltage;
-            $analytics['rpm'][]=$data->rpm;
-            $analytics['error_code'][]=$data->error_code;
-        };
+            $analytics['solar_power_input'][] = $data->solar_power_input;
+            $analytics['power_output'][] = $data->power_output;
+            $analytics['panel_voltage'][] = $data->panel_voltage;
+            $analytics['rpm'][] = $data->rpm;
+            $analytics['error_code'][] = $data->error_code;
+        }
 
-        
-        return inertia('User/DeviceAnalytics', [
+        return Inertia::render('User/DeviceAnalytics', [
             'device' => $device,
             'analytics' => $analytics
         ]);

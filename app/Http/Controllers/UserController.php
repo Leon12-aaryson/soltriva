@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Device;
+use App\Models\DeviceAnalytics;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -12,6 +13,37 @@ class UserController extends Controller
     {
         $userId = auth()->id();
         $devices = Device::where('user_id', $userId)->get();
+        $deviceData = DeviceAnalytics::whereIn('device_id', $devices->pluck('id'))->get();
+        
+        $analyticsGroupedByDevice = [];
+
+        foreach ($deviceData as $data) {
+            $deviceId = $data->device_id;
+            
+            if (!isset($analyticsGroupedByDevice[$deviceId])) {
+                $analyticsGroupedByDevice[$deviceId] = [
+                    'voltage' => [],
+                    'current' => [],
+                    'temperature' => [],
+                    'timestamp' => [],
+                    'solar_power_input' => [],
+                    'power_output' => [],
+                    'panel_voltage' => [],
+                    'rpm' => [],
+                    'error_code' => [],
+                ];
+            }
+
+            $analyticsGroupedByDevice[$deviceId]['voltage'][] = $data->voltage;
+            $analyticsGroupedByDevice[$deviceId]['current'][] = $data->current;
+            $analyticsGroupedByDevice[$deviceId]['temperature'][] = $data->temperature;
+            $analyticsGroupedByDevice[$deviceId]['timestamp'][] = $data->recorded_at;
+            $analyticsGroupedByDevice[$deviceId]['solar_power_input'][] = $data->solar_power_input;
+            $analyticsGroupedByDevice[$deviceId]['power_output'][] = $data->power_output;
+            $analyticsGroupedByDevice[$deviceId]['panel_voltage'][] = $data->panel_voltage;
+            $analyticsGroupedByDevice[$deviceId]['rpm'][] = $data->rpm;
+            $analyticsGroupedByDevice[$deviceId]['error_code'][] = $data->error_code;
+        }
 
         // Calculate statistics
         $stats = [
@@ -21,42 +53,10 @@ class UserController extends Controller
             'maintenanceDue' => $devices->where('maintenance_due', true)->count(),
         ];
 
-        // Placeholder for recent activities and notifications
-        // Replace these with actual data retrieval logic as needed
-        $recentActivities = [
-            [
-                'id' => 1,
-                'description' => 'Activated device "Thermostat A1"',
-                'timestamp' => now()->subMinutes(10),
-            ],
-            [
-                'id' => 2,
-                'description' => 'Deactivated device "Light Bulb B2"',
-                'timestamp' => now()->subHours(1),
-            ],
-            [
-                'id' => 3,
-                'description' => 'Scheduled maintenance for "HVAC C3"',
-                'timestamp' => now()->subDays(1),
-            ],
-        ];
-        // Sample Notifications
-        $notifications = [
-            [
-                'id' => 1,
-                'message' => 'Device "Thermostat A1" has been activated.',
-            ],
-            [
-                'id' => 2,
-                'message' => 'Maintenance scheduled for device "HVAC C3".',
-            ],
-        ];
-
         return Inertia::render('User/Dashboard', [
             'devices' => $devices,
             'stats' => $stats,
-            'recentActivities' => $recentActivities,
-            'notifications' => $notifications,
+            'analyticsGroupedByDevice' => $analyticsGroupedByDevice,
         ]);
     }
 
