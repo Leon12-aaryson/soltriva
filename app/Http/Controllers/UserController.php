@@ -31,6 +31,8 @@ class UserController extends Controller
                     'panel_voltage' => [],
                     'rpm' => [],
                     'error_code' => [],
+                    'ambient_temperature' => [],
+                    'efficiency' => [],
                 ];
             }
 
@@ -43,6 +45,8 @@ class UserController extends Controller
             $analyticsGroupedByDevice[$deviceId]['panel_voltage'][] = $data->panel_voltage;
             $analyticsGroupedByDevice[$deviceId]['rpm'][] = $data->rpm;
             $analyticsGroupedByDevice[$deviceId]['error_code'][] = $data->error_code;
+            $analyticsGroupedByDevice[$deviceId]['ambient_temperature'][] = $data->ambient_temperature;
+            $analyticsGroupedByDevice[$deviceId]['efficiency'][] = $data->efficiency;
         }
 
         // Calculate statistics

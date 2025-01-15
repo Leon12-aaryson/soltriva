@@ -10,8 +10,9 @@ import {
     Title,
     Tooltip,
     Legend,
+    ArcElement,
 } from "chart.js";
-import { Line } from 'react-chartjs-2';
+import { Line, Doughnut } from 'react-chartjs-2';
 import { useState } from 'react';
 
 ChartJS.register(
@@ -22,7 +23,8 @@ ChartJS.register(
     BarElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    ArcElement
 );
 
 const UserDashboard = ({ devices, stats, analyticsGroupedByDevice }) => {
@@ -50,11 +52,52 @@ const UserDashboard = ({ devices, stats, analyticsGroupedByDevice }) => {
                     label: dataType,
                     data,
                     fill: false,
-                    backgroundColor: 'rgba(75,192,192,0.4)',
-                    borderColor: 'rgba(75,192,192,1)',
+                    borderColor: 'rgba(22, 40, 159, 1)',
                 },
             ],
         };
+    };
+
+    const getLatestValue = (deviceId, dataType) => {
+        const data = analyticsGroupedByDevice[deviceId][dataType];
+        return data.length > 0 ? data[data.length - 1] : 'N/A';
+    };
+
+    const generateGaugeData = (value, max) => {
+        return {
+            datasets: [
+                {
+                    data: [value, max - value],
+                    backgroundColor: ['rgba(22, 40, 159, 1)', 'rgba(200, 200, 200, 0.5)'],
+                    borderWidth: 0,
+                },
+            ],
+            labels: ['Value', ''],
+        };
+    };
+
+    const gaugeOptions = {
+        circumference: 180,
+        rotation: 270,
+        cutout: '65%', // Increase this value to make the gauge thinner
+        plugins: {
+            tooltip: {
+                enabled: false,
+            },
+            datalabels: {
+                display: true,
+                formatter: (value, context) => {
+                    const index = context.dataIndex;
+                    const label = context.chart.data.labels[index];
+                    return label === 'Value' ? value : '';
+                },
+                color: '#000',
+                font: {
+                    size: 16,
+                    weight: 'bold',
+                },
+            },
+        },
     };
 
     return (
@@ -100,20 +143,51 @@ const UserDashboard = ({ devices, stats, analyticsGroupedByDevice }) => {
                             </select>
                         </div>
                         {selectedDeviceId && (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                                <div className="border border-slate-300 rounded-lg p-4 shadow">
-                                    <h4 className="text-md font-bold">Voltage</h4>
-                                    <Line data={generateChartData(selectedDeviceId, 'voltage')} />
+                            <div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-6">
+                                    <div className="p-4 bg-white shadow rounded">
+                                        <h4 className="text-md font-bold">L1</h4>
+                                        <p className="text-2xl">{getLatestValue(selectedDeviceId, 'voltage')}</p>
+                                    </div>
+                                    <div className="p-4 bg-white shadow rounded">
+                                        <h4 className="text-md font-bold">L2</h4>
+                                        <p className="text-2xl">{getLatestValue(selectedDeviceId, 'current')}</p>
+                                    </div>
+                                    <div className="p-4 bg-white shadow rounded">
+                                        <h4 className="text-md font-bold">L3</h4>
+                                        <p className="text-2xl">{getLatestValue(selectedDeviceId, 'power_output')}</p>
+                                    </div>
+                                    <div className="p-4 bg-white shadow rounded">
+                                        <h4 className="text-md font-bold">Device Temperature</h4>
+                                        <p className="text-2xl">{getLatestValue(selectedDeviceId, 'temperature')}</p>
+                                    </div>
+                                    <div className="p-4 bg-white shadow rounded">
+                                        <h4 className="text-md font-bold">Ambient Temperature</h4>
+                                        <p className="text-2xl">{getLatestValue(selectedDeviceId, 'ambient_temperature')}</p>
+                                    </div>
                                 </div>
-                                <div className="border border-slate-300 rounded-lg p-4 shadow">
-                                    <h4 className="text-md font-bold">Current</h4>
-                                    <Line data={generateChartData(selectedDeviceId, 'current')} />
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                                    <div className="border border-slate-300 rounded-lg p-4 shadow">
+                                        <h4 className="text-md font-bold">Voltage</h4>
+                                        <Line data={generateChartData(selectedDeviceId, 'voltage')} />
+                                    </div>
+                                    <div className="border border-slate-300 rounded-lg p-4 shadow">
+                                        <h4 className="text-md font-bold">Current</h4>
+                                        <Line data={generateChartData(selectedDeviceId, 'current')} />
+                                    </div>
+                                    <div className="border border-slate-300 rounded-lg p-4 shadow">
+                                        <h4 className="text-md font-bold">Temperature</h4>
+                                        <Line data={generateChartData(selectedDeviceId, 'temperature')} />
+                                    </div>
+                                    <div className="border border-slate-300 rounded-lg p-4 shadow">
+                                        <h4 className="text-md font-bold">RPM</h4>
+                                        <Doughnut data={generateGaugeData(getLatestValue(selectedDeviceId, 'rpm'), 5000)} options={gaugeOptions} />
+                                    </div>
+                                    <div className="border border-slate-300 rounded-lg p-4 shadow">
+                                        <h4 className="text-md font-bold">Efficiency</h4>
+                                        <Doughnut data={generateGaugeData(getLatestValue(selectedDeviceId, 'efficiency'), 100)} options={gaugeOptions} />
+                                    </div>
                                 </div>
-                                <div className="border border-slate-300 rounded-lg p-4 shadow">
-                                    <h4 className="text-md font-bold">Temperature</h4>
-                                    <Line data={generateChartData(selectedDeviceId, 'temperature')} />
-                                </div>
-                                {/* Add more charts for other data types as needed */}
                             </div>
                         )}
                     </div>
