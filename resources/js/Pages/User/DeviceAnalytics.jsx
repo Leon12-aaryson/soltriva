@@ -31,6 +31,11 @@ const DeviceAnalytics = ({ device, analytics }) => {
     const user = props.auth.user;
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [timeFrame, setTimeFrame] = useState("days");
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
+
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
     useEffect(() => {
         if (!analytics) {
@@ -45,47 +50,95 @@ const DeviceAnalytics = ({ device, analytics }) => {
     if (error) return <div>Error: {error}</div>;
 
     // Calculate averages
-    const average = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+    const filterDataByTimeFrame = (data, timeFrame) => {
+        const filteredData = {};
+        data.forEach((value, index) => {
+            const date = new Date(analytics.timestamp[index]);
+            const key = timeFrame === "months" ? `${date.getMonth()}-${date.getFullYear()}` : date.toLocaleDateString();
+            if (!filteredData[key]) {
+                filteredData[key] = [];
+            }
+            filteredData[key].push(value);
+        });
+        return filteredData;
+    };
 
-    const averageEfficiency = average(analytics.efficiency || []);
-    const averageVoltageStability = average(analytics.voltage_stability || []);
-    const averageTemperature = average(analytics.temperature);
+    const filterDataByDateRange = (data) => {
+        if (!startDate || !endDate) return data;
+        const start = new Date(startDate).getTime();
+        const end = new Date(endDate).getTime();
+        return data.filter((_, index) => {
+            const timestamp = new Date(analytics.timestamp[index]).getTime();
+            return timestamp >= start && timestamp <= end;
+        });
+    };
+
+    const calculateAverage = (data, timeFrame) => {
+        const filteredData = filterDataByTimeFrame(data, timeFrame);
+        const averages = Object.values(filteredData).map(
+            (values) => values.reduce((a, b) => a + b, 0) / values.length
+        );
+        return averages;
+    };
+
+    const filteredAnalytics = {
+        ...analytics,
+        efficiency: filterDataByDateRange(analytics.efficiency || []),
+        voltage_stability: filterDataByDateRange(analytics.voltage_stability || []),
+        temperature: filterDataByDateRange(analytics.temperature || []),
+        voltage: filterDataByDateRange(analytics.voltage || []),
+        power_output: filterDataByDateRange(analytics.power_output || []),
+        rpm: filterDataByDateRange(analytics.rpm || []),
+        timestamp: filterDataByDateRange(analytics.timestamp || []),
+    };
+
+    const averageEfficiency = calculateAverage(filteredAnalytics.efficiency, timeFrame);
+    const averageVoltageStability = calculateAverage(filteredAnalytics.voltage_stability, timeFrame);
+    const averageTemperature = calculateAverage(filteredAnalytics.temperature, timeFrame);
+
+    console.log("Filtered Analytics:", filteredAnalytics);
+    console.log("Average Efficiency:", averageEfficiency);
+    console.log("Average Voltage Stability:", averageVoltageStability);
+    console.log("Average Temperature:", averageTemperature);
 
     // Prepare chart data
     const efficiencyData = {
-        labels: analytics.timestamp.map((ts) =>
-            new Date(ts).toLocaleDateString()
-        ),
+        labels: Object.keys(filterDataByTimeFrame(filteredAnalytics.timestamp, timeFrame)).map((key) => {
+            const [month, year] = key.split("-");
+            return timeFrame === "months" ? `${monthNames[month]} ${year}` : key;
+        }),
         datasets: [
             {
                 label: "Average Efficiency",
-                data: analytics.efficiency || [],
+                data: averageEfficiency,
                 backgroundColor: "rgba(75,192,192,0.6)",
             },
         ],
     };
 
     const voltageStabilityData = {
-        labels: analytics.timestamp.map((ts) =>
-            new Date(ts).toLocaleDateString()
-        ),
+        labels: Object.keys(filterDataByTimeFrame(filteredAnalytics.timestamp, timeFrame)).map((key) => {
+            const [month, year] = key.split("-");
+            return timeFrame === "months" ? `${monthNames[month]} ${year}` : key;
+        }),
         datasets: [
             {
                 label: "Average Voltage Stability",
-                data: analytics.voltage_stability || [],
+                data: averageVoltageStability,
                 backgroundColor: "rgba(153,102,255,0.6)",
             },
         ],
     };
 
     const temperatureData = {
-        labels: analytics.timestamp.map((ts) =>
-            new Date(ts).toLocaleDateString()
-        ),
+        labels: Object.keys(filterDataByTimeFrame(filteredAnalytics.timestamp, timeFrame)).map((key) => {
+            const [month, year] = key.split("-");
+            return timeFrame === "months" ? `${monthNames[month]} ${year}` : key;
+        }),
         datasets: [
             {
                 label: "Average Temperature (°C)",
-                data: analytics.temperature,
+                data: averageTemperature,
                 backgroundColor: "rgba(22, 40, 159, 1)",
             },
         ],
@@ -93,11 +146,11 @@ const DeviceAnalytics = ({ device, analytics }) => {
 
     // Prepare voltage against time data
     const voltageTimeData = {
-        labels: analytics.timestamp.map((ts) => new Date(ts).toLocaleString()),
+        labels: filteredAnalytics.timestamp.map((ts) => new Date(ts).toLocaleDateString()),
         datasets: [
             {
                 label: "Voltage vs Time",
-                data: analytics.voltage || [],
+                data: filteredAnalytics.voltage || [],
                 backgroundColor: "rgba(153,102,255,0.6)",
                 borderColor: "rgba(153,102,255,1)",
                 fill: false,
@@ -107,20 +160,20 @@ const DeviceAnalytics = ({ device, analytics }) => {
 
     // Prepare power and RPM against time data
     const powerRPMData = {
-        labels: analytics.timestamp.map((ts) =>
+        labels: filteredAnalytics.timestamp.map((ts) =>
             new Date(ts).toLocaleDateString()
         ),
         datasets: [
             {
                 label: "Average Power Output",
-                data: analytics.power_output || [],
+                data: filteredAnalytics.power_output || [],
                 borderColor: "rgba(255,99,132,1)",
                 backgroundColor: "rgba(255,99,132,0.2)",
                 fill: false,
             },
             {
                 label: "Average RPM",
-                data: analytics.rpm || [],
+                data: filteredAnalytics.rpm || [],
                 borderColor: "rgba(54,162,235,1)",
                 backgroundColor: "rgba(54,162,235,0.2)",
                 fill: false,
@@ -130,11 +183,38 @@ const DeviceAnalytics = ({ device, analytics }) => {
 
     return (
         <>
-            <div className="p-4 analytics">
+            <div className="p-4 m-4 analytics">
                 <Head title={`Analytics for ${device.name}`} />
                 <h2 className="text-xl font-semibold">
                     Analytics for {device.name}
                 </h2>
+                <div className="time-frame-selector">
+                    <label htmlFor="timeFrame">Select Time Frame: </label>
+                    <select
+                        id="timeFrame"
+                        value={timeFrame}
+                        onChange={(e) => setTimeFrame(e.target.value)}
+                    >
+                        <option value="days">Days</option>
+                        <option value="months">Months</option>
+                    </select>
+                </div>
+                <div className="date-range-selector">
+                    <label htmlFor="startDate">Start Date: </label>
+                    <input
+                        type="date"
+                        id="startDate"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                    />
+                    <label htmlFor="endDate">End Date: </label>
+                    <input
+                        type="date"
+                        id="endDate"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                    />
+                </div>
                 <table className="table-auto divide-y divide-gray-200">
                     <thead>
                         <tr>
@@ -165,21 +245,21 @@ const DeviceAnalytics = ({ device, analytics }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {analytics.voltage.map((voltage, index) => {
+                        {filteredAnalytics.voltage.map((voltage, index) => {
                             const dateObj = new Date(
-                                analytics.timestamp[index]
+                                filteredAnalytics.timestamp[index]
                             );
                             const date = dateObj.toLocaleDateString();
                             const time = dateObj.toLocaleTimeString();
-                            const current = analytics.current[index];
-                            const power_output = analytics.power_output[index];
-                            const rpm = analytics.rpm[index];
+                            const current = filteredAnalytics.current[index];
+                            const power_output = filteredAnalytics.power_output[index];
+                            const rpm = filteredAnalytics.rpm[index];
                             const solar_power_input =
-                                analytics.solar_power_input[index];
+                                filteredAnalytics.solar_power_input[index];
                             const panel_voltage =
-                                analytics.panel_voltage[index];
-                            const temperature = analytics.temperature[index];
-                            const error_code = analytics.error_code[index];
+                                filteredAnalytics.panel_voltage[index];
+                            const temperature = filteredAnalytics.temperature[index];
+                            const error_code = filteredAnalytics.error_code[index];
                             return (
                                 <tr key={index}>
                                     <td className="border border-slate-600">
@@ -218,6 +298,9 @@ const DeviceAnalytics = ({ device, analytics }) => {
                     </tbody>
                 </table>
 
+                <div className="details">
+                    <h5>Details</h5>
+                </div>
                 {/* Charts */}
                 <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div>
