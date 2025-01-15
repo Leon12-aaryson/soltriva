@@ -56,38 +56,6 @@ const UserDashboard = ({ devices, stats, recentActivities = [], notifications = 
                             <p className="text-gray-500">No devices found.</p>
                         )}
                     </div>
-                    
-                    {/* Recent Activities */}
-                    <div className="mb-6">
-                        <h3 className="text-lg font-semibold mb-2">Recent Activities</h3>
-                        {recentActivities.length > 0 ? (
-                            <ul className="bg-white shadow rounded p-4">
-                                {recentActivities.map(activity => (
-                                    <li key={activity.id} className="border-b last:border-b-0 py-2">
-                                        {activity.description} at {new Date(activity.timestamp).toLocaleString()}
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p className="text-gray-500">No recent activities.</p>
-                        )}
-                    </div>
-                    
-                    {/* Notifications */}
-                    <div className="mb-6">
-                        <h3 className="text-lg font-semibold mb-2">Notifications</h3>
-                        {notifications.length > 0 ? (
-                            <ul className="bg-white shadow rounded p-4">
-                                {notifications.map(notification => (
-                                    <li key={notification.id} className="border-b last:border-b-0 py-2">
-                                        {notification.message}
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p className="text-gray-500">No new notifications.</p>
-                        )}
-                    </div>
                 </div>
             </div>
         </AuthenticatedLayout>
