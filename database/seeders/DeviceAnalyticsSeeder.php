@@ -21,7 +21,7 @@ class DeviceAnalyticsSeeder extends Seeder
 
         foreach ($devices as $device) {
             // Create multiple analytics records for each device
-            for ($i = 0; $i < 10; $i++) {
+            for ($i = 0; $i < 100; $i++) {
                 DeviceAnalytics::create([
                     'device_id' => $device->id,
                     'recorded_at' => $faker->dateTimeBetween('-1 year', 'now'),
@@ -36,6 +36,7 @@ class DeviceAnalyticsSeeder extends Seeder
                     'panel_voltage' => $faker->randomFloat(2, 220, 250),
                     'solar_power_input' => $faker->randomFloat(2, 0, 500),
                     'temperature' => $faker->randomFloat(2, 15, 30),
+                    'ambient_temperature' => $faker->randomFloat(2, 15, 30),
                     'max_voltage' => $faker->randomFloat(2, 220, 250),
                     'min_voltage' => $faker->randomFloat(2, 220, 250),
                     'error_code' => $faker->optional()->regexify('[A-Z]{3}[0-9]{3}'),
