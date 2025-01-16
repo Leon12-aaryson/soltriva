@@ -81,6 +81,14 @@ const DeviceAnalytics = ({ device, analytics }) => {
         return averages;
     };
 
+    const calculateTotalEfficiency = (data, timeFrame) => {
+        const filteredData = filterDataByTimeFrame(data, timeFrame);
+        const totalEfficiency = Object.values(filteredData).map(
+            (values) => values.reduce((a, b) => a + b, 0)
+        );
+        return totalEfficiency;
+    };
+
     const filteredAnalytics = {
         ...analytics,
         efficiency: filterDataByDateRange(analytics.efficiency || []),
@@ -92,7 +100,8 @@ const DeviceAnalytics = ({ device, analytics }) => {
         timestamp: filterDataByDateRange(analytics.timestamp || []),
     };
 
-    const averageEfficiency = calculateAverage(filteredAnalytics.efficiency, timeFrame);
+    const totalEfficiency = calculateTotalEfficiency(filteredAnalytics.efficiency, timeFrame);
+    const averageEfficiency = totalEfficiency.map((total, index) => total / Object.keys(filterDataByTimeFrame(filteredAnalytics.timestamp, timeFrame)).length);
     const averageVoltageStability = calculateAverage(filteredAnalytics.voltage_stability, timeFrame);
     const averageTemperature = calculateAverage(filteredAnalytics.temperature, timeFrame);
 
@@ -214,6 +223,10 @@ const DeviceAnalytics = ({ device, analytics }) => {
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
                     />
+                </div>
+                <div className="average-values">
+                    <p>Average Efficiency: {averageEfficiency.reduce((a, b) => a + b, 0) / averageEfficiency.length}</p>
+                    <p>Average Voltage Stability: {averageVoltageStability.reduce((a, b) => a + b, 0) / averageVoltageStability.length}</p>
                 </div>
                 {user.role === "admin" && (
                     <table className="table-auto divide-y divide-gray-200">

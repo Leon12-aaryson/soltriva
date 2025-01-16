@@ -74,6 +74,7 @@ class DeviceController extends Controller
             'voltage' => [],
             'current' => [],
             'temperature' => [],
+            'efficiency' => [],
             'timestamp' => [],
             'solar_power_input' => [],
             'power_output' => [],
@@ -86,6 +87,7 @@ class DeviceController extends Controller
             $analytics['voltage'][] = $data->voltage;
             $analytics['current'][] = $data->current;
             $analytics['temperature'][] = $data->temperature;
+            $analytics['efficiency'][]=$data->efficiency;
             $analytics['timestamp'][] = $data->recorded_at;
             $analytics['solar_power_input'][] = $data->solar_power_input;
             $analytics['power_output'][] = $data->power_output;
