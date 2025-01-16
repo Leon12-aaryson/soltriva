@@ -215,94 +215,93 @@ const DeviceAnalytics = ({ device, analytics }) => {
                         onChange={(e) => setEndDate(e.target.value)}
                     />
                 </div>
-                <table className="table-auto divide-y divide-gray-200">
-                    <thead>
-                        <tr>
-                            <th className="border border-slate-600">Date</th>
-                            <th className="border border-slate-600">Time</th>
-                            <th className="border border-slate-600">
-                                Solar Power Input
-                            </th>
-                            <th className="border border-slate-600">
-                                Power Output
-                            </th>
-                            <th className="border border-slate-600">
-                                Panel Voltage
-                            </th>
-                            <th className="border border-slate-600">RPM</th>
-                            <th className="border border-slate-600">
-                                Voltage (V)
-                            </th>
-                            <th className="border border-slate-600">
-                                Current (A)
-                            </th>
-                            <th className="border border-slate-600">
-                                Temperature (°C)
-                            </th>
-                            <th className="border border-slate-600">
-                                Error Code
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredAnalytics.voltage.map((voltage, index) => {
-                            const dateObj = new Date(
-                                filteredAnalytics.timestamp[index]
-                            );
-                            const date = dateObj.toLocaleDateString();
-                            const time = dateObj.toLocaleTimeString();
-                            const current = filteredAnalytics.current[index];
-                            const power_output = filteredAnalytics.power_output[index];
-                            const rpm = filteredAnalytics.rpm[index];
-                            const solar_power_input =
-                                filteredAnalytics.solar_power_input[index];
-                            const panel_voltage =
-                                filteredAnalytics.panel_voltage[index];
-                            const temperature = filteredAnalytics.temperature[index];
-                            const error_code = filteredAnalytics.error_code[index];
-                            return (
-                                <tr key={index}>
-                                    <td className="border border-slate-600">
-                                        {date}
-                                    </td>
-                                    <td className="border border-slate-600">
-                                        {time}
-                                    </td>
-                                    <td className="border border-slate-600">
-                                        {solar_power_input}
-                                    </td>
-                                    <td className="border border-slate-600">
-                                        {power_output}
-                                    </td>
-                                    <td className="border border-slate-600">
-                                        {panel_voltage}
-                                    </td>
-                                    <td className="border border-slate-600">
-                                        {rpm}
-                                    </td>
-                                    <td className="border border-slate-600">
-                                        {voltage}
-                                    </td>
-                                    <td className="border border-slate-600">
-                                        {current}
-                                    </td>
-                                    <td className="border border-slate-600">
-                                        {temperature}
-                                    </td>
-                                    <td className="border border-slate-600">
-                                        {error_code}
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-
-                <div className="details">
-                    <h5>Details</h5>
-                </div>
+                {user.role === "admin" && (
+                    <table className="table-auto divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th className="border border-slate-600">Date</th>
+                                <th className="border border-slate-600">Time</th>
+                                <th className="border border-slate-600">
+                                    Solar Power Input
+                                </th>
+                                <th className="border border-slate-600">
+                                    Power Output
+                                </th>
+                                <th className="border border-slate-600">
+                                    Panel Voltage
+                                </th>
+                                <th className="border border-slate-600">RPM</th>
+                                <th className="border border-slate-600">
+                                    Voltage (V)
+                                </th>
+                                <th className="border border-slate-600">
+                                    Current (A)
+                                </th>
+                                <th className="border border-slate-600">
+                                    Temperature (°C)
+                                </th>
+                                <th className="border border-slate-600">
+                                    Error Code
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredAnalytics.voltage.map((voltage, index) => {
+                                const dateObj = new Date(
+                                    filteredAnalytics.timestamp[index]
+                                );
+                                const date = dateObj.toLocaleDateString();
+                                const time = dateObj.toLocaleTimeString();
+                                const current = filteredAnalytics.current[index];
+                                const power_output = filteredAnalytics.power_output[index];
+                                const rpm = filteredAnalytics.rpm[index];
+                                const solar_power_input =
+                                    filteredAnalytics.solar_power_input[index];
+                                const panel_voltage =
+                                    filteredAnalytics.panel_voltage[index];
+                                const temperature = filteredAnalytics.temperature[index];
+                                const error_code = filteredAnalytics.error_code[index];
+                                return (
+                                    <tr key={index}>
+                                        <td className="border border-slate-600">
+                                            {date}
+                                        </td>
+                                        <td className="border border-slate-600">
+                                            {time}
+                                        </td>
+                                        <td className="border border-slate-600">
+                                            {solar_power_input}
+                                        </td>
+                                        <td className="border border-slate-600">
+                                            {power_output}
+                                        </td>
+                                        <td className="border border-slate-600">
+                                            {panel_voltage}
+                                        </td>
+                                        <td className="border border-slate-600">
+                                            {rpm}
+                                        </td>
+                                        <td className="border border-slate-600">
+                                            {voltage}
+                                        </td>
+                                        <td className="border border-slate-600">
+                                            {current}
+                                        </td>
+                                        <td className="border border-slate-600">
+                                            {temperature}
+                                        </td>
+                                        <td className="border border-slate-600">
+                                            {error_code}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                )}
+                
                 {/* Charts */}
-                <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                     <div>
                         <h3 className="text-lg font-semibold">
                             Average Efficiency
