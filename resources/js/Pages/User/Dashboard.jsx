@@ -29,14 +29,8 @@ ChartJS.register(
     ArcElement
 );
 
-const UserDashboard = ({ devices, stats, analyticsGroupedByDevice }) => {
+const UserDashboard = ({ devices, analyticsGroupedByDevice }) => {
     // Destructure stats with default values
-    const {
-        totalDevices = 0,
-        activeDevices = 0,
-        offlineDevices = 0,
-        maintenanceDue = 0,
-    } = stats || {};
 
     const [selectedDeviceId, setSelectedDeviceId] = useState(devices.length > 0 ? devices[0].id : null);
     const [filterType, setFilterType] = useState('days');
