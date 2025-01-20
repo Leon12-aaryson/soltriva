@@ -197,7 +197,7 @@ const DeviceAnalytics = ({ device, analytics }) => {
                 <h2 className="text-xl font-semibold">
                     Analytics for {device.name}
                 </h2>
-                <div className="time-frame-selector">
+                <div className="time-frame-selector p-2">
                     <label htmlFor="timeFrame">Select Time Frame: </label>
                     <select
                         id="timeFrame"
@@ -208,7 +208,7 @@ const DeviceAnalytics = ({ device, analytics }) => {
                         <option value="months">Months</option>
                     </select>
                 </div>
-                <div className="date-range-selector">
+                <div className="date-range-selector p-2">
                     <label htmlFor="startDate">Start Date: </label>
                     <input
                         type="date"

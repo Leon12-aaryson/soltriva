@@ -50,3 +50,12 @@ td, tr, th {
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
 }
+
+.time-frame-selector, .date-range-selector {
+    margin-left: 0.5rem;
+}
+
+.time-frame-selector input, .date-range-selector input {
+    border-radius: .2rem;
+    margin-left: 0.5rem;
+}

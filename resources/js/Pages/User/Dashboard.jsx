@@ -284,23 +284,23 @@ const UserDashboard = ({ devices, analyticsGroupedByDevice }) => {
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-6">
                                     <div className="p-4 bg-white shadow rounded">
                                         <h4 className="text-md font-bold">L1</h4>
-                                        <p className="text-2xl">{getLatestValueInRange(selectedDeviceId, 'voltage')}</p>
+                                        <p className="text-2xl">{getLatestValueInRange(selectedDeviceId, 'voltage')} VAC</p>
                                     </div>
                                     <div className="p-4 bg-white shadow rounded">
                                         <h4 className="text-md font-bold">L2</h4>
-                                        <p className="text-2xl">{getLatestValueInRange(selectedDeviceId, 'current')}</p>
+                                        <p className="text-2xl">{getLatestValueInRange(selectedDeviceId, 'current')} VAC</p>
                                     </div>
                                     <div className="p-4 bg-white shadow rounded">
                                         <h4 className="text-md font-bold">L3</h4>
-                                        <p className="text-2xl">{getLatestValueInRange(selectedDeviceId, 'power_output')}</p>
+                                        <p className="text-2xl">{getLatestValueInRange(selectedDeviceId, 'power_output')} VAC</p>
                                     </div>
                                     <div className="p-4 bg-white shadow rounded">
                                         <h4 className="text-md font-bold">Device Temperature</h4>
-                                        <p className="text-2xl">{getLatestValueInRange(selectedDeviceId, 'temperature')}</p>
+                                        <p className="text-2xl">{getLatestValueInRange(selectedDeviceId, 'temperature')} &deg;C</p>
                                     </div>
                                     <div className="p-4 bg-white shadow rounded">
                                         <h4 className="text-md font-bold">Ambient Temperature</h4>
-                                        <p className="text-2xl">{getLatestValueInRange(selectedDeviceId, 'ambient_temperature')}</p>
+                                        <p className="text-2xl">{getLatestValueInRange(selectedDeviceId, 'ambient_temperature')} &deg;C</p>
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
