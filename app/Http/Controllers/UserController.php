@@ -13,6 +13,7 @@ class UserController extends Controller
     {
         $userId = auth()->id();
         $devices = Device::where('user_id', $userId)->get();
+        
         $deviceData = DeviceAnalytics::whereIn('device_id', $devices->pluck('id'))->get();
         
         $analyticsGroupedByDevice = [];
@@ -105,6 +106,8 @@ class UserController extends Controller
     {
         // Fetch devices allocated to the authenticated user
         $devices = Device::where('user_id', auth()->id())->get();
+
+        // dd($devices);
 
         // Return the devices to the User/Devices page
         return Inertia::render('User/Devices', ['devices' => $devices]);
