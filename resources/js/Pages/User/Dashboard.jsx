@@ -282,10 +282,11 @@ const UserDashboard = ({ devices, analyticsGroupedByDevice }) => {
                         {selectedDeviceId && (
                             <div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-6">
-                                    <div className="p-4 bg-white shadow rounded">
+                                    {/* Remove the L1 (voltage) card */}
+                                    {/* <div className="p-4 bg-white shadow rounded">
                                         <h4 className="text-md font-bold">L1</h4>
                                         <p className="text-2xl">{getLatestValueInRange(selectedDeviceId, 'voltage')} VAC</p>
-                                    </div>
+                                    </div> */}
                                     <div className="p-4 bg-white shadow rounded">
                                         <h4 className="text-md font-bold">L2</h4>
                                         <p className="text-2xl">{getLatestValueInRange(selectedDeviceId, 'current')} VAC</p>
@@ -304,10 +305,11 @@ const UserDashboard = ({ devices, analyticsGroupedByDevice }) => {
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                                    <div className="border border-slate-300 rounded-lg p-4 shadow">
+                                    {/* Remove the Voltage chart */}
+                                    {/* <div className="border border-slate-300 rounded-lg p-4 shadow">
                                         <h4 className="text-md font-bold">Voltage</h4>
                                         <Line data={generateChartData(selectedDeviceId, 'voltage')} />
-                                    </div>
+                                    </div> */}
                                     <div className="border border-slate-300 rounded-lg p-4 shadow">
                                         <h4 className="text-md font-bold">Current</h4>
                                         <Line data={generateChartData(selectedDeviceId, 'current')} />
