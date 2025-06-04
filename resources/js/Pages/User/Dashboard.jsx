@@ -111,8 +111,23 @@ const UserDashboard = ({ devices, analyticsGroupedByDevice }) => {
     };
 
     const generateChartData = (deviceId, dataType) => {
-        let data = analyticsGroupedByDevice[deviceId][dataType];
-        let labels = analyticsGroupedByDevice[deviceId]['timestamp'];
+        const deviceData = analyticsGroupedByDevice[deviceId];
+        if (!deviceData || !deviceData[dataType] || !deviceData['timestamp']) {
+            return {
+                labels: [],
+                datasets: [
+                    {
+                        label: dataType,
+                        data: [],
+                        fill: false,
+                        borderColor: 'rgba(22, 40, 159, 1)',
+                    },
+                ],
+            };
+        }
+
+        let data = deviceData[dataType];
+        let labels = deviceData['timestamp'];
 
         if (filterType === 'dateRange') {
             data = filterDataByDateRange(data);
@@ -137,13 +152,17 @@ const UserDashboard = ({ devices, analyticsGroupedByDevice }) => {
     };
 
     const getLatestValue = (deviceId, dataType) => {
-        const data = analyticsGroupedByDevice[deviceId][dataType];
+        const deviceData = analyticsGroupedByDevice[deviceId];
+        if (!deviceData || !deviceData[dataType]) return 'N/A';
+        const data = deviceData[dataType];
         return data.length > 0 ? data[data.length - 1] : 'N/A';
     };
 
     const getLatestValueInRange = (deviceId, dataType) => {
-        let data = analyticsGroupedByDevice[deviceId][dataType];
-        let labels = analyticsGroupedByDevice[deviceId]['timestamp'];
+        const deviceData = analyticsGroupedByDevice[deviceId];
+        if (!deviceData || !deviceData[dataType] || !deviceData['timestamp']) return 'N/A';
+        let data = deviceData[dataType];
+        let labels = deviceData['timestamp'];
 
         if (filterType === 'dateRange') {
             data = filterDataByDateRange(data);
