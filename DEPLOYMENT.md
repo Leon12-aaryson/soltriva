@@ -1,13 +1,13 @@
 # Soltriva Deployment Guide
 
-This document explains how to deploy the Soltriva Laravel project to a VPS, including installation and configuration of all dependencies.
+This document explains how to deploy and configure the Soltriva Laravel project on a VPS, including all necessary server, PHP, Nginx, SSL, and permissions setup.
 
 ---
 
 ## 1. Server Requirements
 
 - **Ubuntu 22.04 LTS** (recommended)
-- **PHP**: 8.1 or higher (with extensions: mbstring, xml, curl, zip, mysql, etc.)
+- **PHP**: 8.2 or higher (with extensions: mbstring, xml, curl, zip, mysql, etc.)
 - **Composer**
 - **Node.js** and **npm**
 - **MySQL** or compatible database
@@ -18,44 +18,19 @@ This document explains how to deploy the Soltriva Laravel project to a VPS, incl
 
 ## 2. Install System Dependencies
 
-**Update your system:**
 ```bash
 sudo apt update && sudo apt upgrade -y
-```
-
-**Install PHP and extensions:**
-```bash
-sudo apt install -y php php-cli php-fpm php-mbstring php-xml php-curl php-zip php-mysql unzip git curl
-```
-
-**Install Composer:**
-```bash
+sudo apt install -y php8.2 php8.2-cli php8.2-fpm php8.2-mbstring php8.2-xml php8.2-curl php8.2-zip php8.2-mysql unzip git curl
 curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
-```
-
-**Install Node.js and npm:**
-```bash
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs
-```
-
-**Install MySQL Server (if needed):**
-```bash
 sudo apt install -y mysql-server
+sudo apt install -y nginx
+sudo apt install -y supervisor
 ```
 - Secure MySQL: `sudo mysql_secure_installation`
 - Create a database and user for your app.
-
-**Install Nginx:**
-```bash
-sudo apt install -y nginx
-```
-
-**Install Supervisor:**
-```bash
-sudo apt install -y supervisor
-```
 
 ---
 
@@ -100,20 +75,23 @@ php artisan key:generate
 
 ---
 
-## 7. Database Migration
+## 7. Database Migration and Seeding
 
 ```bash
 php artisan migrate --force
 php artisan db:seed --force
 ```
+> **If you get a Faker error:**  
+> Install it with:  
+> `composer require fakerphp/faker --dev`
 
 ---
 
 ## 8. Set Permissions
 
 ```bash
-sudo chown -R www-data:www-data storage bootstrap/cache
-sudo chmod -R 775 storage bootstrap/cache
+sudo chown -R www-data:www-data /var/www/html/soltriva/storage /var/www/html/soltriva/bootstrap/cache
+sudo chmod -R 775 /var/www/html/soltriva/storage /var/www/html/soltriva/bootstrap/cache
 ```
 
 ---
@@ -125,6 +103,7 @@ sudo chmod -R 775 storage bootstrap/cache
 - Create `/etc/nginx/sites-available/soltriva` and add:
   ```
   server {
+      listen 80;
       server_name soltriva.com;
       root /var/www/html/soltriva/public;
 
@@ -133,7 +112,7 @@ sudo chmod -R 775 storage bootstrap/cache
           try_files $uri $uri/ /index.php?$query_string;
       }
       location ~ \.php$ {
-          fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+          fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
           fastcgi_index index.php;
           include fastcgi_params;
           fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
@@ -143,28 +122,9 @@ sudo chmod -R 775 storage bootstrap/cache
 - Enable the site and restart Nginx:
   ```bash
   sudo ln -s /etc/nginx/sites-available/soltriva /etc/nginx/sites-enabled/
+  sudo rm -f /etc/nginx/sites-enabled/default
   sudo nginx -t
   sudo systemctl reload nginx
-  ```
-
-### Apache
-
-- Create `/etc/apache2/sites-available/soltriva.conf` and set:
-  ```
-  <VirtualHost *:80>
-      ServerName soltriva.com
-      DocumentRoot /var/www/html/soltriva/public
-
-      <Directory /var/www/html/soltriva/public>
-          AllowOverride All
-          Require all granted
-      </Directory>
-  </VirtualHost>
-  ```
-- Enable the site and restart Apache:
-  ```bash
-  sudo a2ensite soltriva.conf
-  sudo systemctl restart apache2
   ```
 
 ---
@@ -211,8 +171,6 @@ sudo apt install certbot python3-certbot-nginx
 
 ### 2. Obtain and Install the SSL Certificate
 
-Replace `soltriva.com` with your actual domain if needed:
-
 ```bash
 sudo certbot --nginx -d soltriva.com
 ```
@@ -242,8 +200,15 @@ sudo certbot renew --dry-run
 ## 12. Final Checks
 
 - Visit `https://soltriva.com` to verify the app is running.
-- Check logs in `storage/logs/` for errors.
-- Ensure MQTT and queue workers are running.
+- Check logs in `storage/logs/` for errors:
+  ```bash
+  tail -n 50 /var/www/html/soltriva/storage/logs/laravel.log
+  ```
+- Ensure MQTT and queue workers are running:
+  ```bash
+  sudo supervisorctl status
+  ```
+- If you see a blank page, set `APP_DEBUG=true` in `.env` and run `php artisan config:cache` to see errors.
 
 ---
 
